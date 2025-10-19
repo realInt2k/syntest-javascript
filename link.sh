@@ -5,28 +5,28 @@
 
 # framework libraries
 
-rm -rf node_modules/@syntest/analysis
-rm -rf node_modules/@syntest/cfg
-rm -rf node_modules/@syntest/cli-graphics
-rm -rf node_modules/@syntest/diagnostics
-rm -rf node_modules/@syntest/logging
-rm -rf node_modules/@syntest/metric
-rm -rf node_modules/@syntest/module
-rm -rf node_modules/@syntest/prng
-rm -rf node_modules/@syntest/search
-rm -rf node_modules/@syntest/storage
+shx rm -rf node_modules/@syntest/analysis
+shx rm -rf node_modules/@syntest/cfg
+shx rm -rf node_modules/@syntest/cli-graphics
+shx rm -rf node_modules/@syntest/diagnostics
+shx rm -rf node_modules/@syntest/logging
+shx rm -rf node_modules/@syntest/metric
+shx rm -rf node_modules/@syntest/module
+shx rm -rf node_modules/@syntest/prng
+shx rm -rf node_modules/@syntest/search
+shx rm -rf node_modules/@syntest/storage
 
 # framework plugins
-rm -rf node_modules/@syntest/plugin-event-listener-state-storage
-rm -rf node_modules/@syntest/plugin-event-listener-websocket
-rm -rf node_modules/@syntest/plugin-metric-middleware-file-writer
-rm -rf node_modules/@syntest/plugin-metric-middleware-statistics
-rm -rf node_modules/@syntest/plugin-search-algorithm-experimental
+shx rm -rf node_modules/@syntest/plugin-event-listener-state-storage
+shx rm -rf node_modules/@syntest/plugin-event-listener-websocket
+shx rm -rf node_modules/@syntest/plugin-metric-middleware-file-writer
+shx rm -rf node_modules/@syntest/plugin-metric-middleware-statistics
+shx rm -rf node_modules/@syntest/plugin-search-algorithm-experimental
 
 # framework tools
-rm -rf node_modules/@syntest/base-language
-rm -rf node_modules/@syntest/cli
-rm -rf node_modules/@syntest/init
+shx rm -rf node_modules/@syntest/base-language
+shx rm -rf node_modules/@syntest/cli
+shx rm -rf node_modules/@syntest/init
 
 
 cd node_modules/@syntest

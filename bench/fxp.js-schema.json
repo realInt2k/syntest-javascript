@@ -1,0 +1,118 @@
+{
+  "isName": {
+    "id": ":158:715:::158:823:::7639:7747",
+    "callconv": "free",
+    "arg": {
+      "id": ":158:731:::158:737:::7655:7661",
+      "originalKind": {},
+      "name": "string",
+      "isAny": false,
+      "kind": {}
+    },
+    "ret": {
+      "id": ":158:778:::158:821:::7702:7745",
+      "originalKind": {
+        "boolean": 1
+      },
+      "name": "not_specified",
+      "isAny": false,
+      "kind": {
+        "boolean": 1
+      }
+    }
+  },
+  "getAllMatches": {
+    "id": ":158:383:::158:703:::7307:7627",
+    "callconv": "free",
+    "arg": [
+      {
+        "id": ":158:406:::158:412:::7330:7336",
+        "originalKind": {},
+        "name": "string",
+        "isAny": false,
+        "kind": {}
+      },
+      {
+        "id": ":158:413:::158:418:::7337:7342",
+        "originalKind": {
+          "object": 1
+        },
+        "name": "regex",
+        "isAny": false,
+        "kind": {
+          "object": 1
+        }
+      }
+    ],
+    "ret": {
+      "id": ":158:424:::158:434:::7348:7358",
+      "originalKind": {
+        "undefined": 0.16666666666666666,
+        "array": 0.16666666666666666,
+        "object": 0.16666666666666666,
+        ":158:432:::158:434:::7356:7358<>array": 0.5
+      },
+      "name": "not_specified",
+      "isAny": false,
+      "kind": {
+        "undefined": 0.16666666666666666,
+        "array": 0.5,
+        "object": 0.16666666666666666
+      }
+    }
+  },
+  "buildOptions": {
+    "id": ":323:19:::323:99:::36718:36798",
+    "callconv": "free",
+    "arg": {
+      "id": ":323:41:::323:48:::36740:36747",
+      "originalKind": {},
+      "name": "options",
+      "isAny": false,
+      "kind": {}
+    },
+    "ret": {
+      "id": ":323:57:::323:97:::36756:36796",
+      "originalKind": {},
+      "name": "not_specified",
+      "isAny": false,
+      "kind": {}
+    }
+  },
+  "OrderedObjParser": {
+    "id": ":341:21:::346:967:::37974:39606",
+    "callconv": "free",
+    "arg": {
+      "id": ":341:47:::341:54:::38000:38007",
+      "originalKind": {},
+      "name": "options",
+      "isAny": false,
+      "kind": {}
+    },
+    "ret": []
+  },
+  "XMLParser": {
+    "id": ":417:462:::417:551:::54153:54242",
+    "callconv": "free",
+    "arg": {
+      "id": ":417:481:::417:488:::54172:54179",
+      "originalKind": {},
+      "name": "options",
+      "isAny": false,
+      "kind": {}
+    },
+    "ret": []
+  },
+  "XmlNode": {
+    "id": ":463:36:::465:1:::58688:58827",
+    "callconv": "free",
+    "arg": {
+      "id": ":463:53:::463:60:::58705:58712",
+      "originalKind": {},
+      "name": "tagname",
+      "isAny": false,
+      "kind": {}
+    },
+    "ret": []
+  }
+}
