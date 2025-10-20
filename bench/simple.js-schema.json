@@ -1,0 +1,57 @@
+{
+  "Deflate_1": {
+    "id": ":1:0:::20:1:::0:481",
+    "callconv": "free",
+    "arg": {
+      "id": ":1:19:::1:26:::19:26",
+      "originalKind": {
+        "boolean": 0.5,
+        ":11:4:::11:17:::243:256<>boolean": 0.25,
+        ":11:15:::11:17:::254:256<>object": 0.125,
+        ":11:15:::11:17:::254:256<>boolean": 0.125
+      },
+      "name": "options",
+      "isAny": false,
+      "kind": {
+        "numeric": 0,
+        "integer": 0,
+        "string": 0,
+        "boolean": 0.875,
+        "null": 0,
+        "undefined": 0,
+        "regex": 0,
+        "array": 0,
+        "object": 0.125,
+        "function": 0
+      }
+    },
+    "ret": []
+  },
+  "deflate_1": {
+    "id": ":22:0:::33:1:::483:764",
+    "callconv": "free",
+    "arg": [
+      {
+        "id": ":22:19:::22:24:::502:507",
+        "originalKind": {},
+        "name": "input",
+        "isAny": true,
+        "kind": {}
+      },
+      {
+        "id": ":22:26:::22:33:::509:516",
+        "originalKind": {},
+        "name": "options",
+        "isAny": true,
+        "kind": {}
+      }
+    ],
+    "ret": {
+      "id": ":32:9:::32:24:::746:761",
+      "originalKind": {},
+      "name": "not_specified",
+      "isAny": true,
+      "kind": {}
+    }
+  }
+}

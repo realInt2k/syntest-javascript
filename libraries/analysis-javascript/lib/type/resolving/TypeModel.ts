@@ -56,7 +56,6 @@ export class TypeModel {
   setEqual(id1: string, id2: string) {
     const node1 = this.getTypeNode(id1);
     const node2 = this.getTypeNode(id2);
-
     node1.merge(node2);
   }
 

@@ -32,7 +32,7 @@ export class TypeNode {
   protected _typeScores: Map<string, number>;
   protected _dependencyScores: Map<TypeNode, number>;
   protected _executionScores: Map<string, number>;
-  protected _objectType: ObjectType;
+  public _objectType: ObjectType;
 
   protected probabilities: Map<string, number>;
 
@@ -94,7 +94,7 @@ export class TypeNode {
 
   // dependency score
   public addDependencyScore(dependency: TypeNode, score: number) {
-    if (dependency === this) {
+    if (dependency == this) {
       // not allowed self loop
       return;
       // throw new Error(`ids should not be equal to add a relation id: ${id1}`);
@@ -103,6 +103,7 @@ export class TypeNode {
     const currentScore = this._dependencyScores.get(dependency) ?? 0;
     this._dependencyScores.set(dependency, currentScore + score);
     this.probabilities = undefined;
+
   }
 
   // execution score
@@ -141,9 +142,9 @@ export class TypeNode {
     this._objectType = mergedObjectType;
     other._objectType = mergedObjectType;
 
-    this._typeScores = other._typeScores;
-    this._dependencyScores = other._dependencyScores;
-    this._executionScores = other._executionScores;
+    this._typeScores = new Map(other._typeScores);
+    this._dependencyScores = new Map(other._dependencyScores);
+    this._executionScores = new Map(other._executionScores);
 
     this.probabilities = undefined;
     other.probabilities = undefined;
