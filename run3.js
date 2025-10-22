@@ -12,7 +12,7 @@ const SYNTAX_FROGIVING = true;
 const typeExtractor = new TypeExtractor(SYNTAX_FROGIVING); // syntaxForgiving??
 
 // const fileNames = ["bench/fxp.js", "bench/pako.js", "bench/js-yaml.js"];
-const fileNames = ["bench/simple-object.js"];
+const fileNames = ["bench/js-yaml.js"];
 const allTypeValues = Object.values(TypeEnum);
 setupLogger("", [], "debug");
 
@@ -68,6 +68,8 @@ function plotSchema(fileName) {
   const regType = /^:(\d+):(\d+):::(\d+):(\d+):::(\d+):(\d+)<>(.*)$/;
 
   let schemaJson = {};
+  let idMap = new Map()
+  let objIdMap = new Map()
 
   function getTypeFromOriginalType(type) {
     for (const t of allTypeValues) {
@@ -78,31 +80,23 @@ function plotSchema(fileName) {
     return type
   }
 
-  function getObjtype(node) {
-    const objTypeProperties = node._objectType.properties
-    
-    let schema = {}
-    if (objTypeProperties.size === 0) {
-      // Get type probabilities
-      const probs = node.getTypeProbabilities()
+  /** return a json like mapping of name => type */
+  function getObjectSchema(id) {
+    if (objIdMap.get(id)) {
+      return {}
     } else {
-      objTypeProperties.entries.forEach((entry) => {
-        /**
-         * entry[0] = name 
-         * entry[1] = typeNode id
-         */
-        try {
-          const nextNode = typeModel.getTypeNode(entry[1])
-        } catch (e) {
-          schema[entry[0]] = {}
-        }
-      })
+      objIdMap.set(id, true)
     }
-    
-    return schema
+    let objSchema = {}
+    const node = typeModel.getTypeNode(id)
+    const objProperties = node._objectType.properties
+    objProperties.entries().forEach(entry => {
+      objSchema[entry[0]] = getSchemaFromId(entry[1], entry[0])
+    })
+    return objSchema
   }
 
-  function getSchemaFromId(id, name, idMap) {
+  function getSchemaFromId(id, name) {
     if (idMap.get(id)) {
       return {}
     } else {
@@ -113,14 +107,22 @@ function plotSchema(fileName) {
     const types = [...typeProbs.keys()];
     let typesJson = Object.fromEntries(allTypeValues.map(type => [type, 0]))
     let originalKindJson = {};
-    let objectType = []
+    let objectType = [] 
     let hasType = false;
     let couldBeObject = false;
+    let concreteObject = false;
     for (const type of types) {
       const t = getTypeFromOriginalType(type);
       typesJson[t] += typeProbs.get(type);
       originalKindJson[type] = typeProbs.get(type);
       if (type.includes("object")) {
+        if (type !== "object") {
+          // It is equivalent of something other object
+          const [,startRow,startCol,endRow,endCol,startInd,endInd,,] = type.match(reg)
+          objectType.push(getObjectSchema(`:${startRow}:${startCol}:::${endRow}:${endCol}:::${startInd}:${endInd}`))
+        } else {
+          concreteObject = true
+        }
         couldBeObject = true;
       }
       hasType = true;
@@ -128,17 +130,20 @@ function plotSchema(fileName) {
     typesJson = Object.fromEntries(
       Object.entries(typesJson).filter(([_, value]) => value !== 0)
     )
-    if (couldBeObject) {
-      let cntObjectProperties = 0;
-      const objProperties = node._objectType.properties
-      objProperties.entries().forEach(entry => {
-        objectType.push(getSchemaFromId(entry[1], entry[0], idMap))
-        cntObjectProperties += 1
-      })
-      if (cntObjectProperties == 1) {
-        objectType = objectType[0]
-      }
+    if (concreteObject) {
+      objectType.push(getObjectSchema(id));
+      // let cntObjectProperties = 0;
+      // const objProperties = node._objectType.properties
+      // objProperties.entries().forEach(entry => {
+      //   console.log("GOING INTO: ", entry)
+      //   objectType.push(getSchemaFromId(entry[1], entry[0]))
+      //   cntObjectProperties += 1
+      // })
+      // if (cntObjectProperties == 1) {
+      //   objectType = objectType[0]
+      // }
     }
+    objectType = objectType.filter(obj => Object.keys(obj).length !== 0);
     return {
       id: id,
       originalKind: originalKindJson,
@@ -155,7 +160,7 @@ function plotSchema(fileName) {
     for (const i in ids) {
       const id = ids[i];
       const name = names ? names[i] : "not_specified";
-      let idMap = new Map()
+      
       result.push(getSchemaFromId(id, name, idMap))
       cnt += 1;
     }

@@ -15,7 +15,8 @@
       "kind": {
         "boolean": 0.875,
         "object": 0.125
-      }
+      },
+      "objectType": []
     },
     "ret": []
   },
@@ -38,7 +39,30 @@
       "kind": {
         "boolean": 0.7499999999999998,
         "object": 0.24999999999999994
-      }
+      },
+      "objectType": [
+        {
+          "windowBits": {
+            "id": ":6984:365:::6984:372:::239167:239174 <-> windowBits",
+            "originalKind": {
+              ":6987:67:::6987:85:::239708:239726<>boolean": 0.5,
+              ":6987:56:::6987:85:::239697:239726<>boolean": 0.25,
+              ":6984:365:::6984:372:::239167:239174<>object": 0.0625,
+              ":6984:365:::6984:372:::239167:239174<>boolean": 0.125,
+              ":6984:454:::6984:467:::239256:239269<>boolean": 0.03125,
+              ":6984:465:::6984:467:::239267:239269<>object": 0.015625,
+              ":6984:465:::6984:467:::239267:239269<>boolean": 0.015625
+            },
+            "name": "windowBits",
+            "isAny": false,
+            "kind": {
+              "boolean": 0.921875,
+              "object": 0.078125
+            },
+            "objectType": []
+          }
+        }
+      ]
     },
     "ret": []
   },
@@ -53,7 +77,8 @@
         "originalKind": {},
         "name": "input",
         "isAny": true,
-        "kind": {}
+        "kind": {},
+        "objectType": []
       },
       {
         "id": ":4253:28:::4253:35:::147564:147571",
@@ -74,7 +99,37 @@
         "kind": {
           "boolean": 0.6666666666666666,
           "object": 0.3333333333333333
-        }
+        },
+        "objectType": [
+          {
+            "raw": {
+              "id": ":4274:31:::4274:38:::148148:148155 <-> raw",
+              "originalKind": {
+                ":4276:18:::4276:22:::148206:148210<>boolean": 1
+              },
+              "name": "raw",
+              "isAny": false,
+              "kind": {
+                "boolean": 1
+              },
+              "objectType": []
+            }
+          },
+          {
+            "gzip": {
+              "id": ":4288:25:::4288:32:::148538:148545 <-> gzip",
+              "originalKind": {
+                ":4290:19:::4290:23:::148597:148601<>boolean": 1
+              },
+              "name": "gzip",
+              "isAny": false,
+              "kind": {
+                "boolean": 1
+              },
+              "objectType": []
+            }
+          }
+        ]
       }
     ],
     "ret": {
@@ -82,7 +137,8 @@
       "originalKind": {},
       "name": "not_specified",
       "isAny": true,
-      "kind": {}
+      "kind": {},
+      "objectType": []
     }
   },
   "deflateRaw_1": {
@@ -94,7 +150,8 @@
         "originalKind": {},
         "name": "input",
         "isAny": true,
-        "kind": {}
+        "kind": {},
+        "objectType": []
       },
       {
         "id": ":4274:31:::4274:38:::148148:148155",
@@ -115,7 +172,8 @@
         "kind": {
           "boolean": 0.6666666666666665,
           "object": 0.3333333333333332
-        }
+        },
+        "objectType": []
       }
     ],
     "ret": {
@@ -123,7 +181,8 @@
       "originalKind": {},
       "name": "not_specified",
       "isAny": true,
-      "kind": {}
+      "kind": {},
+      "objectType": []
     }
   },
   "gzip_1": {
@@ -135,7 +194,8 @@
         "originalKind": {},
         "name": "input",
         "isAny": true,
-        "kind": {}
+        "kind": {},
+        "objectType": []
       },
       {
         "id": ":4288:25:::4288:32:::148538:148545",
@@ -156,7 +216,8 @@
         "kind": {
           "boolean": 0.6666666666666665,
           "object": 0.3333333333333332
-        }
+        },
+        "objectType": []
       }
     ],
     "ret": {
@@ -164,7 +225,8 @@
       "originalKind": {},
       "name": "not_specified",
       "isAny": true,
-      "kind": {}
+      "kind": {},
+      "objectType": []
     }
   },
   "inflate_1": {
@@ -176,7 +238,8 @@
         "originalKind": {},
         "name": "input",
         "isAny": true,
-        "kind": {}
+        "kind": {},
+        "objectType": []
       },
       {
         "id": ":7205:28:::7205:35:::247452:247459",
@@ -192,7 +255,23 @@
         "kind": {
           "boolean": 0.6666666666666666,
           "object": 0.3333333333333333
-        }
+        },
+        "objectType": [
+          {
+            "raw": {
+              "id": ":7224:31:::7224:38:::248018:248025 <-> raw",
+              "originalKind": {
+                ":7226:18:::7226:22:::248076:248080<>boolean": 1
+              },
+              "name": "raw",
+              "isAny": false,
+              "kind": {
+                "boolean": 1
+              },
+              "objectType": []
+            }
+          }
+        ]
       }
     ],
     "ret": {
@@ -200,7 +279,8 @@
       "originalKind": {},
       "name": "not_specified",
       "isAny": true,
-      "kind": {}
+      "kind": {},
+      "objectType": []
     }
   },
   "inflateRaw_1": {
@@ -212,7 +292,8 @@
         "originalKind": {},
         "name": "input",
         "isAny": true,
-        "kind": {}
+        "kind": {},
+        "objectType": []
       },
       {
         "id": ":7224:31:::7224:38:::248018:248025",
@@ -228,7 +309,8 @@
         "kind": {
           "boolean": 0.6666666666666665,
           "object": 0.33333333333333326
-        }
+        },
+        "objectType": []
       }
     ],
     "ret": {
@@ -236,43 +318,17 @@
       "originalKind": {},
       "name": "not_specified",
       "isAny": true,
-      "kind": {}
+      "kind": {},
+      "objectType": []
     }
   },
   "ungzip_1": {
     "id": ":7205:2:::7214:3:::247426:247703",
     "callconv": "free",
     "arg": [
-      {
-        "id": ":7205:21:::7205:26:::247445:247450",
-        "originalKind": {},
-        "name": "input",
-        "isAny": true,
-        "kind": {}
-      },
-      {
-        "id": ":7205:28:::7205:35:::247452:247459",
-        "originalKind": {
-          ":7224:31:::7224:38:::248018:248025<>object": 0.16666666666666666,
-          ":7224:31:::7224:38:::248018:248025<>boolean": 0.16666666666666666,
-          ":7225:14:::7225:27:::248043:248056<>boolean": 0.3333333333333333,
-          ":7225:25:::7225:27:::248054:248056<>object": 0.16666666666666666,
-          ":7225:25:::7225:27:::248054:248056<>boolean": 0.16666666666666666
-        },
-        "name": "options",
-        "isAny": false,
-        "kind": {
-          "boolean": 0.6666666666666666,
-          "object": 0.3333333333333333
-        }
-      }
+      {},
+      {}
     ],
-    "ret": {
-      "id": ":7213:11:::7213:26:::247683:247698",
-      "originalKind": {},
-      "name": "not_specified",
-      "isAny": true,
-      "kind": {}
-    }
+    "ret": {}
   }
 }

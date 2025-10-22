@@ -42,7 +42,7 @@ function transformDestructuringAssignment (path) {
 
   const raw = generate(path.node).code;
   const blockComment = `* ${raw.replace(/\*\//g, "*\\/")}`;
-  path.addComment("leading", blockComment, false); // false → block comment
+  path.addComment("leading", blockComment, false); 
 
   path.insertAfter(newDecls);
   path.remove();
@@ -107,8 +107,24 @@ export function transform(source, output = null) {
               );
             }
           }
+
+          // Generate the original assignment code string
+          const originalCode = generate(path.parentPath.node).code;
+
+          // Create a block comment: /* obj.a = { x: 1, y: 2 }; */
+          const commentedStatement = t.emptyStatement();
+          commentedStatement.leadingComments = [
+            {
+              type: "CommentBlock",
+              value: " " + originalCode + " ",
+            },
+          ];
+
           if (path.parentPath.isExpressionStatement()) {
-            path.parentPath.insertAfter(newStatements);
+            path.parentPath.replaceWithMultiple([
+              commentedStatement,
+              ...newStatements,
+            ]);
           }
         }
       }

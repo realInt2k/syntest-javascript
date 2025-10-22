@@ -12,11 +12,11 @@
   function f(a, b, c) {
     return a + b + c * 2;
   }
-  function ex(obj) {
-    obj.deuce = {
+  function ex(obj) {/* obj.deuce = {
       a: 10,
       b: 20
-    };obj.deuce.a = 10;obj.deuce.b = 20;
+    }; */;obj.deuce.a = 10;obj.deuce.b = 20;
+
     obj.num = 21;
     obj.func = f;
     const x = {

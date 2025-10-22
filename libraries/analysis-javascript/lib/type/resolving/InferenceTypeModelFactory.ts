@@ -956,6 +956,15 @@ export class InferenceTypeModelFactory extends TypeModelFactory {
             this._typeModel.addTypeScore(objectId, TypeEnum.OBJECT, 2);
           } else {
             // e.g. object.abc
+            console.log(
+              {
+                objectId,
+                propertyId,
+                propertyElementName: propertyElement.name,
+                involved,
+                originalInvolved
+              }
+            )
             this._typeModel.addPropertyType(
               objectId,
               propertyElement.name,
