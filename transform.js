@@ -42,7 +42,7 @@ function transformDestructuringAssignment (path) {
 
   const raw = generate(path.node).code;
   const blockComment = `* ${raw.replace(/\*\//g, "*\\/")}`;
-  path.addComment("leading", blockComment, false); 
+  // path.addComment("leading", blockComment, false); 
 
   path.insertAfter(newDecls);
   path.remove();
@@ -122,7 +122,7 @@ export function transform(source, output = null) {
 
           if (path.parentPath.isExpressionStatement()) {
             path.parentPath.replaceWithMultiple([
-              commentedStatement,
+              // commentedStatement,
               ...newStatements,
             ]);
           }

@@ -94,6 +94,9 @@ const getStateParams = (source) => {
 };
 export { getStateParams };
 
+/**
+ * Deprecated, I don't use this anymore
+ */
 export function getAllExports(source) {
   let result = [];
   const ast = parser.parse(source, {
@@ -159,4 +162,101 @@ export function getAllExports(source) {
     },
   });
   return result;
+}
+
+/**
+ * Thank Claude for the code (AI-generated code)
+ * I guess I'm using the 3 type of functions for now.
+ */
+function getAllFunctions(sourceCode) {
+  const ast = parser.parse(sourceCode, {
+    sourceType: 'module',
+    plugins: ['jsx', 'typescript', 'decorators-legacy']
+  });
+
+  const functions = [];
+
+  traverse(ast, {
+    // Regular function declarations: function foo() {}
+    FunctionDeclaration(path) {
+      functions.push({
+        type: 'FunctionDeclaration',
+        name: path.node.id?.name || 'anonymous',
+        params: path.node.params.map(p => p.name || 'destructured'),
+        async: path.node.async,
+        generator: path.node.generator,
+        loc: path.node.loc
+      });
+    },
+
+    // Function expressions: const foo = function() {}
+    FunctionExpression(path) {
+      const parent = path.parent;
+      let name = 'anonymous';
+      
+      if (parent.type === 'VariableDeclarator' && parent.id) {
+        name = parent.id.name;
+      } else if (parent.type === 'AssignmentExpression' && parent.left) {
+        name = parent.left.name || parent.left.property?.name || 'anonymous';
+      }
+
+      functions.push({
+        type: 'FunctionExpression',
+        name: path.node.id?.name || name,
+        params: path.node.params.map(p => p.name || 'destructured'),
+        async: path.node.async,
+        generator: path.node.generator,
+        loc: path.node.loc
+      });
+    },
+
+    // Arrow functions: const foo = () => {}
+    ArrowFunctionExpression(path) {
+      const parent = path.parent;
+      let name = 'anonymous';
+      
+      if (parent.type === 'VariableDeclarator' && parent.id) {
+        name = parent.id.name;
+      } else if (parent.type === 'AssignmentExpression' && parent.left) {
+        name = parent.left.name || parent.left.property?.name || 'anonymous';
+      }
+
+      functions.push({
+        type: 'ArrowFunctionExpression',
+        name: name,
+        params: path.node.params.map(p => p.name || 'destructured'),
+        async: path.node.async,
+        loc: path.node.loc
+      });
+    },
+
+    // // Class methods: class Foo { bar() {} }
+    // ClassMethod(path) {
+    //   functions.push({
+    //     type: 'ClassMethod',
+    //     name: path.node.key.name || 'computed',
+    //     params: path.node.params.map(p => p.name || 'destructured'),
+    //     async: path.node.async,
+    //     generator: path.node.generator,
+    //     kind: path.node.kind, // 'constructor', 'method', 'get', 'set'
+    //     static: path.node.static,
+    //     loc: path.node.loc
+    //   });
+    // },
+
+    // // Object methods: const obj = { foo() {} }
+    // ObjectMethod(path) {
+    //   functions.push({
+    //     type: 'ObjectMethod',
+    //     name: path.node.key.name || path.node.key.value || 'computed',
+    //     params: path.node.params.map(p => p.name || 'destructured'),
+    //     async: path.node.async,
+    //     generator: path.node.generator,
+    //     kind: path.node.kind,
+    //     loc: path.node.loc
+    //   });
+    // }
+  });
+
+  return functions;
 }
