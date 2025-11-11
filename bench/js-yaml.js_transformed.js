@@ -359,12 +359,12 @@
         }
       },
       index,
-      length; /* result.scalar = {}; */; /* result.sequence = {}; */; /* result.mapping = {}; */; /* result.fallback = {}; */; /* result.multi = {
-      scalar: [],
-      sequence: [],
-      mapping: [],
-      fallback: []
-    }; */;result.multi.scalar = [];result.multi.sequence = [];result.multi.mapping = [];result.multi.fallback = [];function collectType(type) {if (type.multi) {result.multi[type.kind].push(type);result.multi["fallback"].push(type);
+      length;result.multi.scalar = [];result.multi.sequence = [];result.multi.mapping = [];result.multi.fallback = [];
+
+    function collectType(type) {
+      if (type.multi) {
+        result.multi[type.kind].push(type);
+        result.multi["fallback"].push(type);
       } else {
         result[type.kind][type.tag] = result["fallback"][type.tag] = type;
       }

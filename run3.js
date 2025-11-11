@@ -12,9 +12,18 @@ const SYNTAX_FROGIVING = true;
 const typeExtractor = new TypeExtractor(SYNTAX_FROGIVING); // syntaxForgiving??
 
 // const fileNames = ["bench/fxp.js", "bench/pako.js", "bench/js-yaml.js"];
-const fileNames = ["bench/js-yaml.js"];
+const fileNames = ["bench/newthing.js"];
 const allTypeValues = Object.values(TypeEnum);
 setupLogger("", [], "debug");
+
+function getAllNewRelationship(relationshipMap) {
+  return Array.from(relationshipMap.entries())
+  .filter(([key, value]) => {
+    const rel = value.type || "";
+    return rel === "new L()"
+  })
+  .map(([key]) => key);
+}
 
 function plotSchema(fileName) {
   const filePath = "";
@@ -35,6 +44,14 @@ function plotSchema(fileName) {
     filePath,
     astUnwrapped
   );
+
+  const allNewRelationship = getAllNewRelationship(relationsResult.result)
+  allNewRelationship.forEach((id, i) => {
+    const relNode = relationsResult.result.get(id)
+    const lhsId = relNode.involved[0]
+
+  })
+
   // get Type Model
   const typeResolver = new InferenceTypeModelFactory();
   const typeModel = typeResolver.resolveTypes(
@@ -96,6 +113,64 @@ function plotSchema(fileName) {
     return objSchema
   }
 
+  function capitalizeObjectKeys(obj) {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => {
+        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+        return [capitalizedKey, value];
+      })
+    );
+  }
+
+  function removeEmptyObjFields(obj) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([_, value]) => value !== 0)
+    )
+  }
+
+  function mergeObjectShapes(shapes) {
+    const merged = {};
+
+    for (const shape of shapes) {
+      for (const [key, value] of Object.entries(shape)) {
+        if (!merged[key]) {
+          merged[key] = JSON.parse(JSON.stringify(value)); 
+        } else {
+          const kindMap = merged[key].kind || {};
+          const newKind = value.kind || {};
+          for (const [k, v] of Object.entries(newKind)) {
+            kindMap[k] = (kindMap[k] || 0) + v;
+          }
+          merged[key].kind = kindMap;
+
+          if (value.objectShape && value.objectShape.length > 0) {
+            const deepObjShape = mergeObjectShapes([
+              ...(merged[key].objectShape || []),
+              ...value.objectShape,
+            ]);
+            merged[key].objectShape = deepObjShape
+          }
+          merged[key].arrayValueType = value.arrayValueType ?? {
+            "isAny": true,
+            "kind": {}
+          }
+        }
+      }
+    }
+
+    // Normalize kinds
+    for (const key in merged) {
+      const kind = merged[key].kind;
+      const total = Object.values(kind).reduce((a, b) => a + b, 0);
+      for (const k in kind) {
+        kind[k] = kind[k] / total;
+      }
+    }
+
+    return merged;
+  }
+
+
   function getSchemaFromId(id, name) {
     if (idMap.get(id)) {
       return {}
@@ -111,6 +186,7 @@ function plotSchema(fileName) {
     let hasType = false;
     let couldBeObject = false;
     let concreteObject = false;
+    let couldBeArray = false;
     for (const type of types) {
       const t = getTypeFromOriginalType(type);
       typesJson[t] += typeProbs.get(type);
@@ -125,11 +201,19 @@ function plotSchema(fileName) {
         }
         couldBeObject = true;
       }
+
+      if (type.includes("array")) {
+        couldBeArray = true;
+      }
       hasType = true;
     }
-    typesJson = Object.fromEntries(
-      Object.entries(typesJson).filter(([_, value]) => value !== 0)
-    )
+    typesJson['number'] = typesJson['numeric'] + typesJson['integer']
+    typesJson['numeric'] = 0
+    typesJson['integer'] = 0
+    if (hasType) {
+      typesJson = removeEmptyObjFields(typesJson)
+      typesJson = capitalizeObjectKeys(typesJson)
+    }
     if (concreteObject) {
       objectType.push(getObjectSchema(id));
       // let cntObjectProperties = 0;
@@ -144,15 +228,55 @@ function plotSchema(fileName) {
       // }
     }
     objectType = objectType.filter(obj => Object.keys(obj).length !== 0);
-    return {
-      id: id,
-      originalKind: originalKindJson,
-      name: name,
-      isAny: !hasType,
-      kind: hasType ? typesJson : {},
-      objectType: objectType
+    const mergedObjShapes = objectType; // mergeObjectShapes(objectType)
+    let result = {}
+    result.isAny = !hasType
+    result.kind = hasType ? typesJson : {}
+    if (!isEmptyObject(mergedObjShapes)) {
+      result.objectShape = mergedObjShapes
     }
+    if (couldBeArray) {
+      result.arrayValueType = {
+        "isAny": true,
+        "kind": {}
+      }
+    }
+    return result
   }
+
+  function mergeRet(ret) {
+    if (!Array.isArray(ret)) {
+      return ret;
+    } 
+    if (ret.length <= 1) {
+      return ret[0];
+    }
+
+    const mergedKind = {};
+    let totProbabilities = 0;
+
+    for (const obj of ret) {
+      for (const [key, value] of Object.entries(obj.kind)) {
+        mergedKind[key] = (mergedKind[key] || 0) + value;
+        totProbabilities += value;
+      }
+    }
+
+    const normalizedKind = {};
+    for (const [key, value] of Object.entries(mergedKind)) {
+      normalizedKind[key] = value / totProbabilities;
+    }
+
+    return {
+      isAny: false,
+      kind: normalizedKind,
+    };
+  }
+
+  function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
 
   function getSchemaFromIds(ids = [], names = null) {
     let cnt = 0;
@@ -160,12 +284,11 @@ function plotSchema(fileName) {
     for (const i in ids) {
       const id = ids[i];
       const name = names ? names[i] : "not_specified";
-      
-      result.push(getSchemaFromId(id, name, idMap))
+      const schema = getSchemaFromId(id, name, idMap)
+      if (!isEmptyObject(schema)) {
+        result.push(schema)
+      }
       cnt += 1;
-    }
-    if (cnt === 1) {
-      result = result[0];
     }
     return result;
   }
@@ -186,16 +309,15 @@ function plotSchema(fileName) {
           const probs = Object.fromEntries(typeNode.getTypeProbabilities());
           const line = lines[typeNode.startLine - 1];
           const code = source.slice(typeNode.startIndex, typeNode.endIndex);
-          //   console.log(`fid - ${fid} - is relationship,
-          // \n---relationship type:--- \n${node.type}
-          // \n---probs:--- \n${JSON.stringify(probs, null, 2)},
-          // \n---line:--- \n${line},
-          // \n---code---: \n${code}`)
+          if (node.id == ':123:6:::123:33:::3259:3286') {
+            console.log(exportedFunctions[index].id)
+          }
           if (node.type != "L=R") {
             if (node.type == 'function L(R)') {
               exportedFunctions[index].probabilities = probs;
               exportedFunctions[index].root = fid
             } else {
+              // save
               exportedFunctions[index].probabilities = targetProb;
               exportedFunctions[index].root = targetID;
             }
@@ -220,28 +342,29 @@ function plotSchema(fileName) {
       for (const key in exportedFunctions[index].probabilities) {
         if (key.includes("function")) {
           const match = key.match(reg) === null ? exportedFunctions[index].root.match(reg) : key.match(reg)
-          console.log({match, key:key})
+          // console.log({match, key:key})  
           const [,startLine,startColumn,endLine,endColum,startIndex,endIndex,] = match;
           const id = `:${startLine}:${startColumn}:::${endLine}:${endColum}:::${startIndex}:${endIndex}`;
           const func = typeModel.getTypeNode(id).objectType;
           foundFunctionDeclaration = true;
-          // console.log("Found function declaration");
-          // console.log({ id: id, func });
-          // console.log("function ret: ", [...func.return.values()]);
+          const retType = getSchemaFromIds([...func.return.values()])
           schemaJson[exportedFunctions[index]["name"]] = {
             id: id,
-            callconv: "free",
-            arg: getSchemaFromIds(
+            callconv: "Free",
+            args: getSchemaFromIds(
               [...func.parameters.values()],
               [...func.parameterNames.values()]
             ),
-            ret: getSchemaFromIds([...func.return.values()]),
+            ret: isEmptyObject(retType) ? {
+              "isAny": true,
+              "kind": {}
+            } : mergeRet(retType),
           };
           break;
         }
       }
       if (!foundFunctionDeclaration) {
-        schemaJson[exportedFunctions[index]["name"]] = {}
+        // schemaJson[exportedFunctions[index]["name"]] = {}
         // console.log("No function declaration found");
       }
       // const typeNode = typeModel.getTypeNode(targetID);
@@ -261,3 +384,5 @@ function plotSchema(fileName) {
 for (const name of fileNames) {
   plotSchema(name);
 }
+
+exit(0)
